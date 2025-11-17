@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerta y Recursos — Violencia de Género</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f8fa;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://www.unir.net/wp-content/uploads/2025/02/Que-es-la-violencia-de-genero-y-como-se-manifiesta2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 30px;
+            border-bottom: 3px solid white;
+            border-right: 3px solid white;
+            transform: rotate(45deg);
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            background-color: white;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px 10px 0 0;
+            margin-top: -50px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #49008d;
+            padding-bottom: 10px;
+            scroll-margin-top: 80px;
+        }
+
+        .section h2.emergencia {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .section h2.denuncia {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .content p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .content .highlight {
+            background-color: #f8f1ff;
+            padding: 20px;
+            border-left: 4px solid #49008d;
+            margin: 25px 0;
+        }
+
+        .alert-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 5px solid #f39c12;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+
+        .emergency-box {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-left: 5px solid #e74c3c;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+
+        /* Estilos para los botones de emergencia */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin: 50px 0 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding-top: 30px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .btn-emergencia {
+            background-color: #e74c3c;
+        }
+
+        .btn-emergencia:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-denuncia {
+            background-color: #f39c12;
+        }
+
+        .btn-denuncia:hover {
+            background-color: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-informacion {
+            background-color: #49008d;
+        }
+
+        .btn-informacion:hover {
+            background-color: #49008d;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Estilos para la sección de reporte de incidente */
+        .report-section {
+            background: #f9f2ff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid #d3bbff;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .report-header h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .report-header .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #c180ff, transparent);
+            margin: 25px 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            margin: 0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d7ceda;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #49008d;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .location-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .location-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .location-btn:hover {
+            background: #5a6268;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn-email {
+            background: #49008d;
+            color: white;
+        }
+
+        .btn-email:hover {
+            background: #49008d;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .btn-download {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #5a6268;
+        }
+
+        .resources-section {
+            background: #ecdbffe5;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .resources-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .resources-list {
+            list-style-type: none;
+        }
+
+        .resources-list li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .resources-list li:before {
+            content: "•";
+            color: #49008d;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .help-material {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .help-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #49008d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .security-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .content {
+                padding: 60px 20px;
+                margin-top: -30px;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-col {
+                min-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>Alerta y Recursos — Violencia de Género</h1>
+        <p>Información, apoyo y un canal rápido para notificar a las autoridades. Diseñado para privacidad y accesibilidad.</p>
+        
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </section>
+
+
+    <section class="content" id="mainContent">
+        <div class="section" id="servicios">
+            <h2>ODS 5: Igualdad de Género</h2>
+            <p>Consiste en lograr la igualdad de género y empoderar a todas las mujeres y las niñas.</p>
+            <p>El propósito central de la ODS 5 es poner fin a todas las formas de discriminación y violencia contra las mujeres y niñas en todo el mundo, asegurando que tengan las mismas oportunidades que los hombres en la vida política, económica y pública.</p>
+            <p><strong>Metas</strong></p>
+            <p>1. Poner fin a la discriminación y la violencia: Eliminar todas las formas de discriminación contra todas las mujeres y las niñas en todo el mundo, incluyendo la erradicación de todas las formas de violencia (como el tráfico sexual y la explotación).</p>
+            <p>2. Valorar el trabajo de cuidado no remunerado: Reconocer y valorar el trabajo de cuidado y doméstico no remunerado mediante la prestación de servicios públicos, infraestructuras y políticas de protección social, y promoviendo la responsabilidad compartida en el hogar y la familia.</p>
+            <p>3. Participación y liderazgo: Asegurar la participación plena y efectiva de las mujeres y la igualdad de oportunidades de liderazgo en todos los niveles de toma de decisiones en la vida política, económica y pública.</p>
+            <p>4. Salud sexual y reproductiva: Garantizar el acceso universal a la salud sexual y reproductiva y a los derechos reproductivos.</p>
+            <p>5. Derechos sobre recursos económicos: Emprender reformas para otorgar a las mujeres igualdad de derechos a los recursos económicos, así como acceso a la propiedad y al control de la tierra y otros tipos de bienes, los servicios financieros, la herencia y los recursos naturales.</p>
+            <h2>Violencia de Género</h2>
+            <p>La violencia de género abarca cualquier acto dañino dirigido contra una persona por razón de su género, manifestándose de diversas formas.</p>
+            <p><strong>Violencia física</strong></p>
+            <p>Implica el uso de la fuerza para causar daño o riesgo de lesión corporal. Se identifica a través de agresiones directas como golpes, empujones, patadas o bofetadas. También incluye actos que intimidan físicamente, como lanzar objetos o amenazar con el uso de armas. La identificación es sencilla ya que suele dejar marcas o requerir atención médica, y puede verse en el control del movimiento de la víctima, como impedirle salir de casa o buscar ayuda.</p>
+            <p><strong>Violencia psicológica o emocional</strong></p>
+            <p>Se basa por patrones de humillación y desprecio, que incluyen insultos, críticas constantes o ridiculizar los logros de la persona. Una señal clave es el aislamiento progresivo, donde el agresor impide o controla el contacto de la víctima con sus amigos y familiares. También se manifiesta mediante amenazas y chantaje, haciendo sentir culpable a la víctima por las acciones del agresor o manipulándola emocionalmente.</p>
+            <p><strong>Violencia Sexual</strong></p>
+            <p>Va más allá de la violación o la agresión física.</p>
+            <p>Incluye desde presionar o manipular a la víctima para que tenga relaciones sexuale, hasta la imposición de actos no deseados, incluso dentro de una relación de pareja. También se manifiesta en el control reproductivo, como prohibir el uso de anticonceptivos. Los tocamientos no deseados y el acoso sexual también son formas directas de esta violencia.</p>
+            <p><strong>Violencia económica y patrimonial</strong></p>
+            <p>Consiste en controlar o limitar el acceso de la víctima a recursos económicos y bienes materiales. Se identifica cuando el agresor impide que la víctima trabaje o estudie, controla estrictamente sus gastos o le niega el acceso a dinero. También incluye la destrucción o apropiación de bienes personales, como documentos de identidad, ropa o pertenencias valiosas.</p>
+                        <div class="highlight">
+                <p>Al informar sobre estos temas, es crucial mantener la rigurosidad y el equilibrio, diferenciando el conflicto común del abuso de poder para evitar la problemática minoritaria de los reportes maliciosos o mal identificados. Una denuncia falsa es un delito grave que desgasta el sistema, menoscaba la credibilidad de las víctimas reales y causa daños severos al denunciado injustamente, por lo que la investigación imparcial y el debido proceso son esenciales.</p>
+            </div>
+        </div>
+
+        <div class="section" id="emergencia">
+            <h2 class="emergencia">Emergencia Inmediata</h2>
+            <div class="emergency-box">
+                <p><strong>¿Estás en peligro inmediato o presencias una situación de riesgo?</strong></p>
+                <p>Utiliza la siguiente seccion para contactar directamente con las autoridades.</p>
+            </div>
+        </div>
+        
+        <div class="report-section" id="reportar">
+            <div class="report-header">
+                <h2>Reportar incidente</h2>
+                <p class="subtitle">Opcionalmente anónimo • Tus datos se quedan contigo</p>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <form id="incidentForm">
+                <div class="form-group">
+                    <label>¿Deseas identificarte? (opcional)</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="identification" value="anonimo">
+                            Reportar anónimamente
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="identification" value="identificado">
+                            Proporcionar datos
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="incidentType">Tipo de incidente</label>
+                            <select id="incidentType" required>
+                                <option value="">Selecciona un tipo</option>
+                                <option value="agresion_fisica">Agresión física</option>
+                                <option value="acoso">Agresión psicológica o emocional</option>
+                                <option value="amenaza">Agresión Sexual</option>
+                                <option value="violencia_domestica">Violencia económica y patrimonial</option>
+                                <option value="discriminacion">Discriminación</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="incidentDate">Fecha y hora</label>
+                            <input type="datetime-local" id="incidentDate" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="incidentDescription">Descripción breve (¿qué pasó?)</label>
+                    <textarea 
+                        id="incidentDescription" 
+                        placeholder="Describe lo ocurrido, personas involucradas, ubicación aproximada, riesgo actual..." 
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label for="incidentLocation">Ubicación (opcional)</label>
+                    <input 
+                        type="text" 
+                        id="incidentLocation" 
+                        placeholder="Calle, barrio, ciudad"
+                    >
+                    <div class="location-buttons">
+                        <button type="button" class="location-btn" id="getLocation">Obtener ubicación</button>
+                        <button type="button" class="location-btn" id="copyLocation">Copiar ubicación</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="button" class="action-btn btn-email" id="sendEmail">Enviar reporte por correo</button>
+                    <button type="button" class="action-btn btn-save" id="saveLocally">Guardar localmente</button>
+                    <button type="button" class="action-btn btn-download" id="downloadCopy">Descargar copia</button>
+                </div>
+
+                <div class="security-note">
+                    Al subir o enviar información recuerda priorizar tu seguridad. Evita incluir contraseñas u otra información sensible que no sea necesaria.
+                </div>
+            </form>
+
+            <div class="resources-section">
+                <h3>Recursos y pasos inmediatos</h3>
+                <ul class="resources-list">
+                    <li>Si estás en peligro inmediato, llama al número de emergencias local. Usa el botón rojo arriba.</li>
+                    <li>Busca un lugar seguro: casa de un familiar, vecino o espacio público seguro.</li>
+                    <li>Conserva evidencia: mensajes, fotos, llamadas — en un lugar seguro fuera del dispositivo si es necesario.</li>
+                    <li>Contacta servicios de apoyo (psicológico y legal).</li>
+                </ul>
+
+
+<div class="help-material">
+    <div class="help-card">
+        <h4>Guía Rápida</h4>
+        <p><strong>¿Qué hacer después de un incidente?</strong></p>
+        <p>Se debe garantizar la seguridad buscando un refugio inmediato y contactando las líneas de emergencia.</p>
+        <div class="help-links">
+            <a href="https://lac.unwomen.org/es" target="_blank" class="help-link">ONU Mujeres - América Latina y el Caribe</a>
+            <a href="https://sdmujer.gov.co/nuestros-servicios/servicios-para-las-mujeres/acogida-y-proteccion-gratuita" target="_blank" class="help-link">Secretaría Distrital de la Mujer</a>
+            <a href="https://rutadeatencion.sdmujer.gov.co/" target="_blank" class="help-link">Rutas de Atención y Casas Refugio (Bogotá D.C.)</a>
+        </div>
+    </div>
+    
+    <div class="help-card">
+        <h4>Asesoría Legal</h4>
+        <p>Es fundamental documentar el hecho acudiendo a un centro de salud para obtener un reporte médico detallado de las lesiones y preservar cualquier evidencia física o digital.</p>
+        <div class="help-links">
+            <a href="https://www.defensoria.gov.co/mujeres-genero" target="_blank" class="help-link">Defensoría del Pueblo</a>
+            <a href="https://sismamujer.org/asesoria-psicojuridica/" target="_blank" class="help-link">Sisma Mujer</a>
+            <a href="https://defensamujer.org.co/" target="_blank" class="help-link">Defensa Mujer</a>
+            <a href="https://derecho.uniandes.edu.co/cj-mujeres-nueva-area-del-consultorio-juridico/" target="_blank" class="help-link">CJ Mujeres</a>
+        </div>
+    </div>
+    
+    <div class="help-card">
+        <h4>Apoyo Psicológico</h4>
+        <p>Líneas de escucha y ayuda emocional</p>
+        <div class="help-links">
+            <a href="https://www.sdmujer.gov.co/lineapurpura" target="_blank" class="help-link">Línea Púrpura Distrital - Secretaría Distrital de la Mujer</a>
+            <a href="https://cienciassociales.uniandes.edu.co/noticia/orientacion-psicologica-gratuita-y-confidencial-desde-tu-silla-favorita/" target="_blank" class="help-link">Orientación psicológica gratuita y confidencial - Uniandes</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.help-material {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.help-card {
+    flex: 1;
+    min-width: 280px;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.help-card h4 {
+    color: #2c3e50;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.help-card p {
+    color: #6c757d;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.help-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.help-link {
+    display: block;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    color: #3498db;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.help-link:hover {
+    background: #3498db;
+    color: white;
+    transform: translateX(5px);
+}
+
+.help-card:nth-child(1) {
+    border-left-color: #e74c3c;
+}
+
+.help-card:nth-child(1) .help-link {
+    color: #e74c3c;
+}
+
+.help-card:nth-child(1) .help-link:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.help-card:nth-child(2) {
+    border-left-color: #f39c12;
+}
+
+.help-card:nth-child(2) .help-link {
+    color: #f39c12;
+}
+
+.help-card:nth-child(2) .help-link:hover {
+    background: #f39c12;
+    color: white;
+}
+
+.help-card:nth-child(3) {
+    border-left-color: #9b59b6;
+}
+
+.help-card:nth-child(3) .help-link {
+    color: #9b59b6;
+}
+
+.help-card:nth-child(3) .help-link:hover {
+    background: #9b59b6;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .help-material {
+        flex-direction: column;
+    }
+    
+    .help-card {
+        min-width: 100%;
+    }
+}
+</style>
+            </div>
+        </div>
+
+  
+        <div class="button-container">
+            <button class="btn btn-emergencia" id="btnEmergencia">EMERGENCIA</button>
+            <button class="btn btn-denuncia" onclick="document.getElementById('reportar').scrollIntoView({behavior: 'smooth'})">REALIZAR DENUNCIA</button>
+        </div>
+    </section>
+
+    <script>
+
+        window.addEventListener('scroll', function() {
+            const content = document.getElementById('mainContent');
+            const contentPosition = content.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.2;
+            
+            if(contentPosition < screenPosition) {
+                content.classList.add('visible');
+            }
+        });
+
+        document.getElementById('getLocation').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    document.getElementById('incidentLocation').value = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+                    alert('Ubicación obtenida correctamente');
+                }, function(error) {
+                    alert('Error al obtener la ubicación: ' + error.message);
+                });
+            } else {
+                alert('La geolocalización no es compatible con este navegador');
+            }
+        });
+
+        document.getElementById('copyLocation').addEventListener('click', function() {
+            const locationField = document.getElementById('incidentLocation');
+            if (locationField.value) {
+                navigator.clipboard.writeText(locationField.value)
+                    .then(() => alert('Ubicación copiada al portapapeles'))
+                    .catch(() => alert('Error al copiar la ubicación'));
+            } else {
+                alert('No hay ubicación para copiar');
+            }
+        });
+
+        // Guardar localmente
+        document.getElementById('saveLocally').addEventListener('click', function() {
+            const formData = {
+                type: document.getElementById('incidentType').value,
+                date: document.getElementById('incidentDate').value,
+                description: document.getElementById('incidentDescription').value,
+                location: document.getElementById('incidentLocation').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Guardar Datos
+            const reports = JSON.parse(localStorage.getItem('incidentReports') || '[]');
+            reports.push(formData);
+            localStorage.setItem('incidentReports', JSON.stringify(reports));
+            
+            alert('Reporte guardado localmente');
+        });
+
+        document.getElementById('downloadCopy').addEventListener('click', function() {
+            const formData = {
+                tipo: document.getElementById('incidentType').value,
+                fecha: document.getElementById('incidentDate').value,
+                descripcion: document.getElementById('incidentDescription').value,
+                ubicacion: document.getElementById('incidentLocation').value,
+                fechaReporte: new Date().toLocaleString()
+            };
+
+            const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reporte-incidente-${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('sendEmail').addEventListener('click', function() {
+            alert('En un sistema real, esto enviaría el reporte por correo electrónico');
+        });
+
+        document.getElementById('btnEmergencia').addEventListener('click', function() {
+            if (confirm('Se contactará a las autoridades.')) {
+                // En un sistema real, aquí se redirigiría al número de emergencias
+                alert('Contactando a las autoridades...');
+            }
+        });
+    </script>
+</body>
+</html>
